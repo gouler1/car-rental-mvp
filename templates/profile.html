@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Профиль</h1>
+<p>📧 {{ user.email }}</p>
+<p>👤 {{ user.full_name }}</p>
+{% if user.phone %}<p>📱 {{ user.phone }}</p>{% endif %}
+<p>Дата регистрации: {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+{% endblock %}
