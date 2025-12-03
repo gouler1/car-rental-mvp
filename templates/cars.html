@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Каталог автомобилей</h1>
+<div id="cars-list">
+  {% for car in cars %}
+  <div class="card">
+    <h3>{{ car.brand }} {{ car.model }} ({{ car.year }})</h3>
+    <p>💰 {{ car.price_per_day }} ₽/день | 🪑 {{ car.seats }} мест | ⚙️ {{ car.transmission }}</p>
+    <form id="booking-{{ car.id }}" action="/create-checkout-session" method="POST">
+      <input type="hidden" name="car_id" value="{{ car.id }}">
+      <label>Дата начала: <input type="date" name="start_date" required></label>
+      <label>Дата окончания: <input type="date" name="end_date" required></label>
+      <button type="submit" class="btn">Забронировать</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    const res = await fetch('/create-checkout-session', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (result.url) window.location = result.url;
+  });
+});
+</script>
+{% endblock %}
